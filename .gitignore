@@ -4,3 +4,4 @@
 /vendor/
 .phalcon
 composer.lock
+config/config.php

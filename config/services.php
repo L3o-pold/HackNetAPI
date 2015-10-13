@@ -6,7 +6,6 @@
  */
 
 use Phalcon\Di\FactoryDefault;
-use Phalcon\Mvc\Collection\Manager as CollectionManager;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View\Simple as View;
@@ -44,18 +43,12 @@ $di->setShared('db', function () use ($config) {
     return new $class($dbConfig);
 });
 
-$di->setShared('crypt', function () use ($di) {
+$di->setShared('crypt', function () use ($di, $config) {
     $crypt = new \Phalcon\Crypt();
     $crypt->setMode(MCRYPT_MODE_CFB);
-    $crypt->setKey('#1dj8$=lt?.ak//j1V$');
+    $crypt->setKey($config->application->salt);
 
     return $crypt;
 });
 
-//Make config settings available
 $di->set('config', $config, true);
-
-//Collection manager
-$di['collectionManager'] = function () {
-    return new CollectionManager();
-};
