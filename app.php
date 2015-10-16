@@ -26,6 +26,15 @@ $users->post('/', 'postAction');
 $users->put('/{id:[0-9]+}', 'putAction');
 $users->delete('/{id:[0-9]+}', 'deleteAction');
 
+$files = new MicroCollection();
+$files->setHandler(new FileController());
+$files->setPrefix('/file');
+$files->get('/', 'indexAction');
+$files->get('/{id}', 'getAction');
+$files->post('/', 'postAction');
+$files->put('/{id}', 'putAction');
+$files->delete('/{id}', 'deleteAction');
+
 //$app->options('/user', function() use ($app) {
 //    $content_type = 'application/json';
 //    $status = 200;
@@ -44,6 +53,7 @@ $users->delete('/{id:[0-9]+}', 'deleteAction');
 //});
 
 $app->mount($users);
+$app->mount($files);
 
 $app->notFound(function () use ($app) {
     throw new Exception('Not Found', 404);
@@ -99,7 +109,7 @@ $app->error(function ($exception) use ($app) {
         'errors' => [
             [
                 'status' => 'ERROR',
-                'messages' => [$message]
+                'messages' => (array) $message
             ]
         ]
     ]);

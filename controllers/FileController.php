@@ -1,10 +1,9 @@
 <?php
 
+use Phalcon\Http\Request\Exception;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\View;
 use Phalcon\Tag;
-use UserApp\API;
-use Phalcon\Http\Request\Exception;
 
 /**
  * @package FileController
@@ -13,17 +12,17 @@ use Phalcon\Http\Request\Exception;
 class FileController extends MainController {
 
     /**
-     * @TODO Fetch files of user
-     *
-     * @param $userId
+     * @TODO Fetch userId from DB with appID credentials
      */
-    public function indexAction($userId) {
+    public function indexAction() {
+
+        $userId = 1;
 
         $files = FileModel::find(
             array(
                 "conditions" => "userId = ?1",
                 "bind"       => array(1 => $userId),
-                "order" => "fileName"
+                "order"      => "fileName"
             )
         );
 
@@ -31,26 +30,32 @@ class FileController extends MainController {
 
         foreach ($files as $file) {
             $data[] = array(
-                'id'   => $file->id,
+                'id'       => $file->id,
                 'fileName' => $file->fileName,
-                'userId' => $file->userId
+                'userId'   => $file->userId
             );
         }
 
-        echo json_encode((object) $data);
+        $this->response->setJsonContent(
+            array(
+                'status' => 'FOUND',
+                'data'   => $data
+            )
+        );
+
+        $this->response->send();
     }
 
     /**
-     * @param int $userId
      * @param     $fileName
      */
     public function getAction($fileName) {
 
-        vdd($this->dispatcher->getParams());
+        $userId = 1;
 
         $file = FileModel::findFirst(
             array(
-                "conditions" => "userId = ?1 AND fileName = ?1",
+                "conditions" => "userId = ?1 AND fileName = ?2",
                 "bind"       => array(1 => $userId, 2 => $fileName)
             )
         );
@@ -63,9 +68,9 @@ class FileController extends MainController {
             array(
                 'status' => 'FOUND',
                 'data'   => array(
-                    'id'   => $file->id,
-                    'fileName' => $file->fileName,
-                    'userId' => $file->userId,
+                    'id'          => $file->id,
+                    'fileName'    => $file->fileName,
+                    'userId'      => $file->userId,
                     'fileContent' => $file->fileContent
                 )
             )
@@ -75,22 +80,54 @@ class FileController extends MainController {
     }
 
     /**
-     * @param int $userId
      * @param     $fileName
      */
-    public function putAction($userId, $fileName) {
+    public function putAction($fileName) {
+        $userId = 1;
+    }
+
+    public function postAction() {
+
+        $userId = 1;
+
+        $file = $this->request->getJsonRawBody();
+
+        /**
+         * @TODO Check if Phalcon allow a better way
+         */
+        $phql
+            = "INSERT INTO fileModel (id, fileName, fileContent, userId) VALUES (null, :fileName:, :fileContent:, :userId:)";
+
+        $status = $this->modelsManager->executeQuery(
+            $phql, array(
+            'fileName'    => $file->fileName,
+            'fileContent' => $file->fileContent,
+            'userId'      => $userId
+        )
+        );
+
+        // Create a response
+        $response = new Response();
+
+        // Check if the insertion was successful
+        if (!$status->success()) {
+            throw new Exception('Conflit', 401);
+        }
+
+        // Change the HTTP status
+        $response->setStatusCode(201, "Created");
+
+        $file->id = $status->getModel()->id;
+
+        $response->setJsonContent(array('status' => 'OK', 'data'   => $file));
+
+        return $response;
     }
 
     /**
-     * @param $userId
-     */
-    public function postAction($userId) {
-    }
-
-    /**
-     * @param int $userId
+     * @TODO implement
      * @param     $fileName
      */
-    public function deleteAction($userId, $fileName) {
+    public function deleteAction($fileName) {
     }
 }
