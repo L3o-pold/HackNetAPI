@@ -2,11 +2,9 @@
 
 /**
  * HackNet
- *
  * Licensed under The MIT License (MIT)
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
- *
  * PHP version 5
  *
  * @category Game
@@ -43,6 +41,8 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
     protected $config = array();
 
     /**
+     * DI
+     *
      * @var \Phalcon\DiInterface
      */
     protected $di;
@@ -64,13 +64,14 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Sets the test up by loading the DI container and other stuff
      *
-     * @param  \Phalcon\DiInterface $di
-     * @param  \Phalcon\Config $config
+     * @param \Phalcon\DiInterface $di     DI
+     * @param \Phalcon\Config      $config Configuration
      *
-*@return void
+     * @return void
      */
     public function setUp(
-        Phalcon\DiInterface $di = null, Phalcon\Config $config = null
+        Phalcon\DiInterface $di = null,
+        Phalcon\Config $config = null
     ) {
         // Load any additional services that might be required during testing
         $di = DI::getDefault();
@@ -91,17 +92,17 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
             // Set the URL
             $di->set(
                 'url', function () {
-                $url = new Url();
-                $url->setBaseUri('/');
+                    $url = new Url();
+                    $url->setBaseUri('/');
 
-                return $url;
-            }
+                    return $url;
+                }
             );
 
             $di->set(
                 'escaper', function () {
-                return new \Phalcon\Escaper();
-            }
+                    return new \Phalcon\Escaper();
+                }
             );
         }
 
@@ -129,7 +130,9 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
      * Checks if a particular extension is loaded and if not it marks
      * the tests skipped
      *
-     * @param mixed $extension
+     * @param mixed $extension Extension
+     *
+     * @return void
      */
     public function checkExtension($extension)
     {
@@ -152,11 +155,8 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Returns a unique file name
      *
-     * @author Nikos Dimopoulos <nikos@phalconphp.com>
-     * @since  2012-09-30
-     *
-     * @param  string $prefix A prefix for the file
-     * @param  string $suffix A suffix for the file
+     * @param string $prefix A prefix for the file
+     * @param string $suffix A suffix for the file
      *
      * @return string
      */
@@ -170,12 +170,11 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * Removes a file from the system
+
+     * @param string $path     File path
+     * @param string $fileName File name
      *
-     * @author Nikos Dimopoulos <nikos@phalconphp.com>
-     * @since  2012-09-30
-     *
-     * @param $path
-     * @param $fileName
+     * @return void
      */
     protected function cleanFile($path, $fileName)
     {
@@ -190,6 +189,8 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Get DI
+     *
      * @return \Phalcon\DiInterface
      */
     protected function getDI()
@@ -197,6 +198,11 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
         return $this->di;
     }
 
+    /**
+     * Tear down
+     * 
+     * @return void
+     */
     protected function tearDown()
     {
         $di = $this->getDI();
