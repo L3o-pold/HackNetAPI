@@ -17,6 +17,7 @@ env:
   global:
     - APPLICATION_ENV="travis"
   matrix:
+    - PHALCON_VERSION="2.0.x"
     - PHALCON_VERSION="2.0.8"
     - PHALCON_VERSION="2.0.7"
     - PHALCON_VERSION="2.0.6"

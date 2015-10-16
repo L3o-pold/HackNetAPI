@@ -20,7 +20,6 @@ $loader = new \Phalcon\Loader();
 
 $loader->registerDirs(
     [
-        $config->application->libraryDir,
         $config->application->modelsDir,
         $config->application->controllersDir
     ]
