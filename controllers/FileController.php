@@ -1,20 +1,48 @@
 <?php
 
+/**
+ * HackNet
+ *
+ * Licensed under The MIT License (MIT)
+ * For full copyright and license information, please see the LICENSE
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ *
+ * @category Game
+ * @package  Hacknet
+ * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
+ * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @link     http://www.hacknet.com
+ * @since    1.0.0
+ */
+
 use Phalcon\Http\Request\Exception;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\View;
 use Phalcon\Tag;
 
 /**
- * @package FileController
- * @author  Léopold Jacquot
+ * File controller
+ *
+ * @category Game
+ * @package  Hacknet
+ * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
+ * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @link     http://www.hacknet.com
+ * @since    1.0.0
  */
-class FileController extends MainController {
+class FileController extends MainController
+{
 
     /**
-     * @TODO Fetch userId from DB with appID credentials
+     * Fetch all user files
+     *
+     * @TODO   Fetch userId from DB with appID credentials
+     * @return null
      */
-    public function indexAction() {
+    public function indexAction()
+    {
 
         $userId = 1;
 
@@ -47,9 +75,15 @@ class FileController extends MainController {
     }
 
     /**
-     * @param     $fileName
+     * Fetch a user file
+     *
+     * @param string $fileName File name
+     *
+     * @throws Exception
+     * @return void
      */
-    public function getAction($fileName) {
+    public function getAction($fileName)
+    {
 
         $userId = 1;
 
@@ -80,30 +114,44 @@ class FileController extends MainController {
     }
 
     /**
-     * @param     $fileName
+     * Update a user file
+     *
+     * @param string $fileName File name
+     *
+     * @return void
      */
-    public function putAction($fileName) {
+    public function putAction($fileName)
+    {
         $userId = 1;
     }
 
-    public function postAction() {
+    /**
+     * Create a new user file
+     *
+     * @throws Exception          If duplicate
+     * @return Response $response API Response
+     */
+    public function postAction()
+    {
 
         $userId = 1;
 
         $file = $this->request->getJsonRawBody();
 
         /**
+         * Note
          * @TODO Check if Phalcon allow a better way
          */
         $phql
-            = "INSERT INTO fileModel (id, fileName, fileContent, userId) VALUES (null, :fileName:, :fileContent:, :userId:)";
+            = "INSERT INTO fileModel (id, fileName, fileContent, userId) "
+              . "VALUES (null, :fileName:, :fileContent:, :userId:)";
 
         $status = $this->modelsManager->executeQuery(
             $phql, array(
-            'fileName'    => $file->fileName,
-            'fileContent' => $file->fileContent,
-            'userId'      => $userId
-        )
+                'fileName'    => $file->fileName,
+                'fileContent' => $file->fileContent,
+                'userId'      => $userId
+            )
         );
 
         // Create a response
@@ -119,15 +167,19 @@ class FileController extends MainController {
 
         $file->id = $status->getModel()->id;
 
-        $response->setJsonContent(array('status' => 'OK', 'data'   => $file));
+        $response->setJsonContent(array('status' => 'OK', 'data' => $file));
 
         return $response;
     }
 
     /**
-     * @TODO implement
-     * @param     $fileName
+     * Delete a user file
+     *
+     * @param string $fileName File name
+     *
+     * @return void
      */
-    public function deleteAction($fileName) {
+    public function deleteAction($fileName)
+    {
     }
 }

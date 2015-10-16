@@ -1,4 +1,22 @@
 <?php
+
+/**
+ * HackNet
+ *
+ * Licensed under The MIT License (MIT)
+ * For full copyright and license information, please see the LICENSE
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ *
+ * @category Game
+ * @package  Hacknet
+ * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
+ * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @link     http://www.hacknet.com
+ * @since    1.0.0
+ */
+
 /**
  * Local variables
  *
@@ -35,83 +53,61 @@ $files->post('/', 'postAction');
 $files->put('/{id}', 'putAction');
 $files->delete('/{id}', 'deleteAction');
 
-//$app->options('/user', function() use ($app) {
-//    $content_type = 'application/json';
-//    $status = 200;
-//    $description = 'OK';
-//    $response = $app->response;
-//
-//    $status_header = 'HTTP/1.1 ' . $status . ' ' . $description;
-//    $response->setRawHeader($status_header);
-//    $response->setStatusCode($status, $description);
-//    $response->setContentType($content_type, 'UTF-8');
-//    $response->setHeader('Access-Control-Allow-Origin', '*');
-//    $response->setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-//    $response->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Access-Control-Allow-Origin');
-//    $response->setHeader('Content-type: ' . $content_type, '');
-//    $response->sendHeaders();
-//});
-
 $app->mount($users);
 $app->mount($files);
 
-$app->notFound(function () use ($app) {
-    throw new Exception('Not Found', 404);
-});
-
-$app->before(function () use ($app) {
-    /**
-    $router = $app->router;
-    $request = $app->request;
-
-    $route = $router->getMatchedRoute();
-
-
-    if ($request->isOptions() || is_object($route) && strpos($route->getPattern(), '/preflight') !== false) {
-        return true;
+$app->notFound(
+    function () use ($app) {
+        throw new Exception('Not Found', 404);
     }
-     **/
+);
 
-    $authenticated = UserApp::authenticated();
+$app->before(
+    function () use ($app) {
 
-    if ($authenticated) {
-        return true;
+        $authenticated = UserApp::authenticated();
+
+        if ($authenticated) {
+            return true;
+        }
+
+        if ($app->cookies->has('ua_session_token')) {
+            $app->cookies->useEncryption(false);
+            $token = $app->cookies->get('ua_session_token');
+            $token = $token->getValue();
+            $app->cookies->useEncryption(true);
+        } else {
+            throw new Exception('Forbiden', 401);
+        }
+
+        return UserApp::loginWithToken($token);
     }
+);
 
-    if ($app->cookies->has('ua_session_token')) {
-        $app->cookies->useEncryption(false);
-        $token = $app->cookies->get('ua_session_token');
-        $token = $token->getValue();
-        $app->cookies->useEncryption(true);
-    } /** elseif (isset($request->getHeaders()['Authorization'])) {
-        $token = $request->getHeaders()['Authorization'];
-    } **/ else {
-        throw new Exception('Forbiden', 401);
-    }
+$app->error(
+    function ($exception) use ($app) {
+        $message = 'Bad Request';
+        $code    = 400;
 
-    return UserApp::loginWithToken($token);
-});
+        if ($exception instanceof Exception) {
+            $message = $exception->getMessage();
+            $code    = $exception->getCode();
+        } else {
+            $message = $exception->getMessage();
+        }
 
-$app->error(function ($exception) use ($app) {
-    $message = 'Bad Request';
-    $code    = 400;
+        $app->response->setStatusCode($code, $message);
 
-    if ($exception instanceof Exception) {
-        $message = $exception->getMessage();
-        $code    = $exception->getCode();
-    } else {
-        $message = $exception->getMessage();
-    }
-
-    $app->response->setStatusCode($code, $message);
-
-    $app->response->setJsonContent([
-        'errors' => [
+        $app->response->setJsonContent(
             [
-                'status' => 'ERROR',
+            'errors' => [
+            [
+                'status'   => 'ERROR',
                 'messages' => (array) $message
             ]
-        ]
-    ]);
-    $app->response->send();
-});
+            ]
+            ]
+        );
+        $app->response->send();
+    }
+);

@@ -1,0 +1,41 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7
+
+sudo: false
+
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
+env:
+  global:
+    - APPLICATION_ENV="travis"
+  matrix:
+    - PHALCON_VERSION="2.0.8"
+    - PHALCON_VERSION="2.0.7"
+    - PHALCON_VERSION="2.0.6"
+    - PHALCON_VERSION="2.0.5"
+
+before_script:
+ - composer self-update
+ - git clone -q --depth=1 https://github.com/phalcon/cphalcon.git -b phalcon-v${PHALCON_VERSION}
+ - (cd cphalcon/ext; export CFLAGS="-g3 -O1 -fno-delete-null-pointer-checks -Wall"; phpize &> /dev/null && ./configure --silent --enable-phalcon &> /dev/null && make --silent -j4 > /dev/null && make --silent install && phpenv config-add ../unit-tests/ci/phalcon.ini &> /dev/null)
+ - php -r 'echo \Phalcon\Version::get() . PHP_EOL;'
+ - composer install --prefer-source --no-interaction
+
+script:
+ - vendor/bin/phpcs --config-set installed_paths ../../escapestudios/Symfony2-coding-standard
+ - vendor/bin/phpcbf --config-set installed_paths ../../escapestudios/Symfony2-coding-standard
+ - vendor/bin/phpcbf --runtime-set exitIgnoreWarnings true --ignore=vendor,library,cphalcon ./
+ - vendor/bin/phpcs --runtime-set exitIgnoreWarnings true  --ignore=vendor,library,cphalcon ./
+ - phpunit
+
+notifications:
+  email:
+    false
