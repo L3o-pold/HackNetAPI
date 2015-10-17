@@ -16,10 +16,9 @@
  */
 
 use Phalcon\DI;
-use Phalcon\Test\UnitTestCase as PhalconTestCase;
 
 /**
- * Unit base clss
+ * Unit base class
  *
  * @category Game
  * @package  Hacknet
@@ -46,13 +45,6 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
      * @var \Phalcon\DiInterface
      */
     protected $di;
-
-    /**
-     * Cache
-     *
-     * @var \Voice\Cache
-     */
-    protected $cache;
 
     /**
      * Loaded
@@ -87,7 +79,7 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
             DI::reset();
 
             // Instantiate a new DI container
-            $di = new FactoryDefault();
+            $di = new Phalcon\Di\FactoryDefault();
 
             // Set the URL
             $di->set(

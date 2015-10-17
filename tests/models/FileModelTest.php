@@ -2,11 +2,9 @@
 
 /**
  * HackNet
- *
  * Licensed under The MIT License (MIT)
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
- *
  * PHP version 5
  *
  * @category Game
@@ -18,7 +16,7 @@
  */
 
 /**
- * User controller test class
+ * Unit File model class
  *
  * @category Game
  * @package  Hacknet
@@ -27,21 +25,6 @@
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
-class TestUserController extends \UnitTestCase
+class FileModelTest extends UnitTestCase
 {
-    /**
-     * Example test
-     *
-     * @return void
-     */
-    public function testTestCase()
-    {
-        $this->assertEquals(
-            'works', 'works', 'This is OK'
-        );
-
-        $this->assertEquals(
-            'works', 'works1', 'This will fail'
-        );
-    }
 }
