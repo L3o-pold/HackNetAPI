@@ -2,11 +2,9 @@
 
 /**
  * HackNet
- *
  * Licensed under The MIT License (MIT)
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
- *
  * PHP version 5
  *
  * @category Game
@@ -23,44 +21,11 @@
  * @var \Phalcon\Mvc\Micro $app
  */
 use Phalcon\Http\Request\Exception;
-use Phalcon\Mvc\Micro\Collection as MicroCollection;
 use UserApp\Widget\User as UserApp;
-
-//$response = $app->response;
-//$response->setHeader('Access-Control-Allow-Origin', '*');
-//$response->setHeader('Access-Control-Allow-Headers', 'X-Requested-With');
-//$response->sendHeaders();
 
 $app->response->setContentType('application/json', 'UTF-8');
 
-UserApp::setAppId($config->oauth->appId);
-
-$users = new MicroCollection();
-$users->setHandler(new UserController());
-$users->setPrefix('/user');
-$users->get('/', 'indexAction');
-$users->get('/{id:[0-9]+}', 'getAction');
-$users->post('/', 'postAction');
-$users->put('/{id:[0-9]+}', 'putAction');
-$users->delete('/{id:[0-9]+}', 'deleteAction');
-
-$files = new MicroCollection();
-$files->setHandler(new FileController());
-$files->setPrefix('/file');
-$files->get('/', 'indexAction');
-$files->get('/{id}', 'getAction');
-$files->post('/', 'postAction');
-$files->put('/{id}', 'putAction');
-$files->delete('/{id}', 'deleteAction');
-
-$app->mount($users);
-$app->mount($files);
-
-$app->notFound(
-    function () use ($app) {
-        throw new Exception('Not Found', 404);
-    }
-);
+include __DIR__ . '/config/routing.php';
 
 $app->before(
     function () use ($app) {
@@ -100,12 +65,12 @@ $app->error(
 
         $app->response->setJsonContent(
             [
-            'errors' => [
-            [
-                'status'   => 'ERROR',
-                'messages' => (array) $message
-            ]
-            ]
+                'errors' => [
+                    [
+                        'status'   => 'ERROR',
+                        'messages' => (array) $message
+                    ]
+                ]
             ]
         );
         $app->response->send();

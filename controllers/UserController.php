@@ -21,6 +21,7 @@ use Phalcon\Http\Response;
 use Phalcon\Mvc\View;
 use Phalcon\Tag;
 use UserApp\API;
+use UserApp\Widget\User as UserApp;
 
 /**
  * User controller
@@ -52,7 +53,9 @@ class UserController extends MainController
         foreach ($users->items as $user) {
             $data[] = [
                 'id'    => $user->user_id,
-                'email' => $user->login
+                'name'    => $user->first_name,
+                'email' => $user->login,
+                'userAppId' => $user->user_id
             ];
         }
 
@@ -66,8 +69,32 @@ class UserController extends MainController
      *
      * @return void
      */
-    public function getAction($userId)
+    public function getAction($userAppId)
     {
+        $user = UserModel::findFirst(
+            array(
+                "conditions" => "userAppId = ?1",
+                "bind"       => array(1 => $userAppId)
+            )
+        );
+
+        if ($user == false) {
+            throw new Exception('Not Found', 404);
+        }
+
+        $this->response->setJsonContent(
+            array(
+                'status' => 'FOUND',
+                'data'   => array(
+                    'id'          => $user->id,
+                    'name'    => $user->name,
+                    'email'      => $user->email,
+                    'userAppId' => $user->userAppId
+                )
+            )
+        );
+
+        $this->response->send();
     }
 
     /**
@@ -88,6 +115,40 @@ class UserController extends MainController
      */
     public function postAction()
     {
+        $user = $this->request->getJsonRawBody();
+
+        /**
+         * Note
+         * @TODO Check if Phalcon allow a better way
+         */
+        $phql
+            = "INSERT INTO userModel (id, name, email, userAppId) "
+              . "VALUES (null, :name:, :email:, :userAppId:)";
+
+        $status = $this->modelsManager->executeQuery(
+            $phql, array(
+                'name'    => $user->name,
+                'email' => $user->email,
+                'userAppId'      => UserApp::current()->user_id
+            )
+        );
+
+        // Create a response
+        $response = new Response();
+
+        // Check if the insertion was successful
+        if (!$status->success()) {
+            throw new Exception('Conflit', 401);
+        }
+
+        // Change the HTTP status
+        $response->setStatusCode(201, "Created");
+
+        $user->id = $status->getModel()->id;
+
+        $response->setJsonContent(array('status' => 'OK', 'data' => $user));
+
+        return $response;
     }
 
     /**

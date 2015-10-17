@@ -39,6 +39,12 @@ class UserModel extends Model
     public $id;
 
     /**
+     * User name
+     * @var string
+     */
+    public $name;
+
+    /**
      * User email
      * @var string
      */
@@ -92,11 +98,11 @@ class UserModel extends Model
         $this->validate(
             new \Phalcon\Mvc\Model\Validator\StringLength(
                 [
-                'field'          => 'password',
-                'max'            => 50,
-                'min'            => 3,
-                'messageMaximum' => 'We don\'t like really long password',
-                'messageMinimum' => 'We want a longer password'
+                    'field'          => 'userAppId',
+                    'max'            => 50,
+                    'min'            => 3,
+                    'messageMaximum' => 'Invalid UserApp id',
+                    'messageMinimum' => 'Invalid UserApp id'
                 ]
             )
         );

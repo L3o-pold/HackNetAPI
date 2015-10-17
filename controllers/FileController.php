@@ -21,6 +21,7 @@ use Phalcon\Http\Request\Exception;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\View;
 use Phalcon\Tag;
+use UserApp\Widget\User as UserApp;
 
 /**
  * File controller
@@ -43,8 +44,7 @@ class FileController extends MainController
      */
     public function indexAction()
     {
-
-        $userId = 1;
+        $userId = $this->session->get('auth')['id'];
 
         $files = FileModel::find(
             array(
@@ -85,7 +85,7 @@ class FileController extends MainController
     public function getAction($fileName)
     {
 
-        $userId = 1;
+        $userId = $this->session->get('auth')['id'];
 
         $file = FileModel::findFirst(
             array(
@@ -122,7 +122,7 @@ class FileController extends MainController
      */
     public function putAction($fileName)
     {
-        $userId = 1;
+        $userId = $this->session->get('auth')['id'];
     }
 
     /**
@@ -133,8 +133,7 @@ class FileController extends MainController
      */
     public function postAction()
     {
-
-        $userId = 1;
+        $userId = $this->session->get('auth')['id'];
 
         $file = $this->request->getJsonRawBody();
 
