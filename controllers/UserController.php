@@ -65,7 +65,7 @@ class UserController extends MainController
     /**
      * Fetch an user
      *
-     * @param int $userId User id
+     * @param int $userAppId User id
      *
      * @return void
      */

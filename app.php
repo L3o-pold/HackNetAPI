@@ -25,7 +25,7 @@ use UserApp\Widget\User as UserApp;
 
 $app->response->setContentType('application/json', 'UTF-8');
 
-include __DIR__ . '/config/routing.php';
+require __DIR__ . '/config/routing.php';
 
 $app->before(
     function () use ($app) {

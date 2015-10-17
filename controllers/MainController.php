@@ -32,19 +32,21 @@ use UserApp\Widget\User as UserApp;
 class MainController extends Controller
 {
     /**
-     * Auth
+     * Auth an user based on UserApp
      *
+     * @return void
      * @throws Exception If login fail
      */
-    public function onConstruct() {
+    public function onConstruct() 
+    {
 
-        $user = $this->getCurrentUser();
+        $user = $this->_getCurrentUser();
 
         /**
          * User is not registered in our MySQL database
          */
         if (!$user) {
-            $user->id = $this->userRegister();
+            $user->id = $this->_userRegister();
         }
 
         $this->session->set(
@@ -56,9 +58,12 @@ class MainController extends Controller
     }
 
     /**
+     * Get connected user based on UserApp credential
+     *
      * @return \Phalcon\Mvc\Model
      */
-    private function getCurrentUser() {
+    private function _getCurrentUser()
+    {
         return UserModel::findFirst(
             array(
                 "conditions" => "userAppId = ?1",
@@ -68,10 +73,13 @@ class MainController extends Controller
     }
 
     /**
+     * Register a player
+     *
      * @return int       User id
      * @throws Exception If user can't be registered
      */
-    private function userRegister() {
+    private function _userRegister()
+    {
         $phql
             = "INSERT INTO userModel (id, name, email, userAppId) "
               . "VALUES (null, :name:, :email:, :userAppId:)";
@@ -79,6 +87,8 @@ class MainController extends Controller
         $appUser = UserApp::current();
 
         /**
+         * Result of insertion
+         *
          * @var Phalcon\Mvc\Model\Query\Status $status
          */
         $status = $this->modelsManager->executeQuery(
@@ -88,18 +98,19 @@ class MainController extends Controller
                 'userAppId' => $appUser->user_id
             )
         );
-
-        // Check if the insertion was successful
+        
         if ($status->success()) {
             return $status->getModel()->id;
         }
 
         $errorMessage = 'Error during login:';
 
+        /**
+         * Errors during inserting
+         *
+         * @var Phalcon\Mvc\Model\Message $message
+         */
         foreach ($status->getMessages() as $message) {
-            /**
-             * @var Phalcon\Mvc\Model\Message $message
-             */
             $errorMessage .= ' ' . $message->getMessage();
         }
 
