@@ -50,12 +50,11 @@ class UserController extends MainController
         $users = $api->user->search();
 
         $data = [];
+
         foreach ($users->items as $user) {
             $data[] = [
                 'id'    => $user->user_id,
-                'name'    => $user->first_name,
-                'email' => $user->login,
-                'userAppId' => $user->user_id
+                'email' => $user->login
             ];
         }
 

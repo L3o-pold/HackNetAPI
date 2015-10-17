@@ -2,11 +2,9 @@
 
 /**
  * HackNet
- *
  * Licensed under The MIT License (MIT)
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
- *
  * PHP version 5
  *
  * @category Game
@@ -34,27 +32,38 @@ class UserModel extends Model
 
     /**
      * User id
+     *
      * @var int
      */
     public $id;
 
     /**
      * User name
+     *
      * @var string
      */
     public $name;
 
     /**
      * User email
+     *
      * @var string
      */
     public $email;
 
     /**
      * User App ID
+     *
      * @var string
      */
     public $userAppId;
+
+    /**
+     * User IP adress
+     *
+     * @var string
+     */
+    public $userIp;
 
     /**
      * Get the SQL table name
@@ -63,7 +72,23 @@ class UserModel extends Model
      */
     public function getSource()
     {
-        return 'user';
+        return 'computer';
+    }
+
+    /**
+     * Map field on database table
+     *
+     * @return array
+     */
+    public function columnMap()
+    {
+        return [
+            'user_id'    => 'id',
+            'user_name'  => 'name',
+            'user_email' => 'email',
+            'user_appid' => 'userAppId',
+            'user_ip'    => 'userIp'
+        ];
     }
 
     /**
@@ -86,11 +111,20 @@ class UserModel extends Model
         $this->validate(
             new \Phalcon\Mvc\Model\Validator\Email(
                 [
-                'field'          => 'email',
-                'max'            => 50,
-                'min'            => 3,
-                'messageMaximum' => 'We don\'t like really long names',
-                'messageMinimum' => 'We want the full name'
+                    'field'          => 'email',
+                    'max'            => 50,
+                    'min'            => 3,
+                    'messageMaximum' => 'We don\'t like really long names',
+                    'messageMinimum' => 'We want the full name'
+                ]
+            )
+        );
+
+        $this->validate(
+            new \Phalcon\Mvc\Model\Validator\Uniqueness(
+                [
+                    'field'   => 'email',
+                    'message' => "Value of field 'email' is already present in another record"
                 ]
             )
         );
@@ -103,6 +137,15 @@ class UserModel extends Model
                     'min'            => 3,
                     'messageMaximum' => 'Invalid UserApp id',
                     'messageMinimum' => 'Invalid UserApp id'
+                ]
+            )
+        );
+
+        $this->validate(
+            new \Phalcon\Mvc\Model\Validator\Uniqueness(
+                [
+                    'field'   => 'userAppId',
+                    'message' => "Value of field 'userAppId' is already present in another record"
                 ]
             )
         );

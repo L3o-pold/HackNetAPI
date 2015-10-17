@@ -21,7 +21,6 @@ use Phalcon\Http\Request\Exception;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\View;
 use Phalcon\Tag;
-use UserApp\Widget\User as UserApp;
 
 /**
  * File controller
@@ -39,7 +38,6 @@ class FileController extends MainController
     /**
      * Fetch all user files
      *
-     * @TODO   Fetch userId from DB with appID credentials
      * @return null
      */
     public function indexAction()
@@ -135,36 +133,22 @@ class FileController extends MainController
     {
         $userId = $this->session->get('auth')['id'];
 
-        $file = $this->request->getJsonRawBody();
+        $postFile = $this->request->getJsonRawBody();
 
-        /**
-         * Note
-         * @TODO Check if Phalcon allow a better way
-         */
-        $phql
-            = "INSERT INTO fileModel (id, fileName, fileContent, userId) "
-              . "VALUES (null, :fileName:, :fileContent:, :userId:)";
+        $file = new FileModel();
 
-        $status = $this->modelsManager->executeQuery(
-            $phql, array(
-                'fileName'    => $file->fileName,
-                'fileContent' => $file->fileContent,
-                'userId'      => $userId
-            )
-        );
+        $file->fileName = $postFile->fileName;
+        $file->fileContent = $postFile->fileContent;
+        $file->userId = $userId;
 
-        // Create a response
         $response = new Response();
 
-        // Check if the insertion was successful
-        if (!$status->success()) {
+        if (!$file->save()) {
             throw new Exception('Conflit', 401);
         }
 
         // Change the HTTP status
         $response->setStatusCode(201, "Created");
-
-        $file->id = $status->getModel()->id;
 
         $response->setJsonContent(array('status' => 'OK', 'data' => $file));
 

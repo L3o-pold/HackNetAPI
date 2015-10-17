@@ -65,6 +65,20 @@ class FileModel extends Model
         return 'file';
     }
 
+    /**
+     * Map field on database table
+     *
+     * @return array
+     */
+    public function columnMap()
+    {
+        return [
+            'file_id'      => 'id',
+            'file_name'    => 'fileName',
+            'file_content' => 'fileContent',
+            'user_id'      => 'userId'
+        ];
+    }
 
     /**
      * Validate user input
@@ -77,18 +91,25 @@ class FileModel extends Model
             new \Phalcon\Mvc\Model\Validator\StringLength(
                 [
                 'field'          => 'fileName',
-                'max'            => 50,
+                'max'            => 20,
                 'min'            => 1,
-                'messageMaximum' => 'We don\'t like really long fileName',
-                'messageMinimum' => 'We want a longer fileName'
+                'messageMaximum' => 'We don\'t like really long file name',
+                'messageMinimum' => 'We want a longer file name'
                 ]
             )
         );
 
-        /**
-         * Note
-         * @TODO Check userId and fileContent
-         */
+        $this->validate(
+            new \Phalcon\Mvc\Model\Validator\StringLength(
+                [
+                    'field'          => 'fileContent',
+                    'max'            => 1000,
+                    'min'            => 0,
+                    'messageMaximum' => 'We don\'t like really long file'
+                ]
+            )
+        );
+
         return $this->validationHasFailed() != true;
     }
 }

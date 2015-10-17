@@ -37,8 +37,22 @@ class MainController extends Controller
      * @return void
      * @throws Exception If login fail
      */
-    public function onConstruct() 
+    public function onConstruct()
     {
+        $authenticated = UserApp::authenticated();
+
+        if ($authenticated && $this->session->get('auth')['id']) {
+            //return;
+        } elseif (!$this->cookies->has('ua_session_token')) {
+            throw new Exception('Forbiden', 401);
+        }
+
+        $this->cookies->useEncryption(false);
+        $token = $this->cookies->get('ua_session_token');
+        $token = $token->getValue();
+        $this->cookies->useEncryption(true);
+
+        UserApp::loginWithToken($token);
 
         $user = $this->_getCurrentUser();
 
@@ -46,6 +60,7 @@ class MainController extends Controller
          * User is not registered in our MySQL database
          */
         if (!$user) {
+            $user = new \stdClass();
             $user->id = $this->_userRegister();
         }
 
@@ -80,37 +95,24 @@ class MainController extends Controller
      */
     private function _userRegister()
     {
-        $phql
-            = "INSERT INTO userModel (id, name, email, userAppId) "
-              . "VALUES (null, :name:, :email:, :userAppId:)";
-
         $appUser = UserApp::current();
-
-        /**
-         * Result of insertion
-         *
-         * @var Phalcon\Mvc\Model\Query\Status $status
-         */
-        $status = $this->modelsManager->executeQuery(
-            $phql, array(
-                'name'       => $appUser->last_name,
-                'email'      => $appUser->email,
-                'userAppId' => $appUser->user_id
-            )
-        );
-        
-        if ($status->success()) {
-            return $status->getModel()->id;
-        }
-
         $errorMessage = 'Error during login:';
+        $user = new UserModel();
+
+        $user->name = $appUser->last_name;
+        $user->email = $appUser->email;
+        $user->userAppId = $appUser->user_id;
+
+        if ($user->save()) {
+            return $user->id;
+        }
 
         /**
          * Errors during inserting
          *
          * @var Phalcon\Mvc\Model\Message $message
          */
-        foreach ($status->getMessages() as $message) {
+        foreach ($user->getMessages() as $message) {
             $errorMessage .= ' ' . $message->getMessage();
         }
 
