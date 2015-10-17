@@ -10,10 +10,13 @@
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
+namespace HackNet\Tests\Controllers;
+
+use HackNet\Tests\AbstractUnitTestCase;
 
 /**
  * Unit File controller class
@@ -21,10 +24,10 @@
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
-class FileControllerTest extends UnitTestCase
+class FileControllerTest extends AbstractUnitTestCase
 {
 }

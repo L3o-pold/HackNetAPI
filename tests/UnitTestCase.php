@@ -10,12 +10,18 @@
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
+namespace HackNet\Tests;
 
+use Phalcon\Config;
 use Phalcon\DI;
+use Phalcon\Di\FactoryDefault;
+use Phalcon\DiInterface;
+use PHPUnit_Framework_IncompleteTestError;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Unit base class
@@ -23,11 +29,11 @@ use Phalcon\DI;
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
-abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
+abstract class AbstractUnitTestCase extends PHPUnit_Framework_TestCase
 {
 
     /**
@@ -51,7 +57,7 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
      *
      * @var bool
      */
-    private $_loaded = false;
+    private $loaded = false;
 
     /**
      * Sets the test up by loading the DI container and other stuff
@@ -61,10 +67,8 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function setUp(
-        Phalcon\DiInterface $di = null,
-        Phalcon\Config $config = null
-    ) {
+    public function setUp(DiInterface $di = null, Config $config = null)
+    {
         // Load any additional services that might be required during testing
         $di = DI::getDefault();
 
@@ -79,11 +83,12 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
             DI::reset();
 
             // Instantiate a new DI container
-            $di = new Phalcon\Di\FactoryDefault();
+            $di = new FactoryDefault();
 
             // Set the URL
             $di->set(
-                'url', function () {
+                'url',
+                function () {
                     $url = new Url();
                     $url->setBaseUri('/');
 
@@ -92,7 +97,8 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
             );
 
             $di->set(
-                'escaper', function () {
+                'escaper',
+                function () {
                     return new \Phalcon\Escaper();
                 }
             );
@@ -100,7 +106,7 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
 
         $this->di = $di;
 
-        $this->_loaded = true;
+        $this->loaded = true;
     }
 
     /**
@@ -111,8 +117,8 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
      */
     public function __destruct()
     {
-        if (!$this->_loaded) {
-            throw new \PHPUnit_Framework_IncompleteTestError(
+        if (!$this->loaded) {
+            throw new PHPUnit_Framework_IncompleteTestError(
                 'Please run parent::setUp().'
             );
         }
@@ -154,15 +160,15 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getFileName($prefix = '', $suffix = 'log')
     {
-        $prefix = ($prefix) ? $prefix . '_' : '';
+        $prefix = ($prefix) ? $prefix.'_' : '';
         $suffix = ($suffix) ? $suffix : 'log';
 
-        return uniqid($prefix, true) . '.' . $suffix;
+        return uniqid($prefix, true).'.'.$suffix;
     }
 
     /**
      * Removes a file from the system
-
+     *
      * @param string $path     File path
      * @param string $fileName File name
      *
@@ -170,7 +176,7 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function cleanFile($path, $fileName)
     {
-        $file = (substr($path, -1, 1) != "/") ? ($path . '/') : $path;
+        $file = (substr($path, -1, 1) != "/") ? ($path.'/') : $path;
         $file .= $fileName;
 
         $actual = file_exists($file);

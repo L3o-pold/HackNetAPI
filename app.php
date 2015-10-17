@@ -10,7 +10,7 @@
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
@@ -20,35 +20,7 @@
  *
  * @var \Phalcon\Mvc\Micro $app
  */
-use Phalcon\Http\Request\Exception;
-use UserApp\Widget\User as UserApp;
 
 $app->response->setContentType('application/json', 'UTF-8');
 
-require __DIR__ . '/config/routing.php';
-
-$app->error(
-    function ($exception) use ($app) {
-        $code    = 400;
-
-        if ($exception instanceof Exception) {
-            $code    = $exception->getCode();
-        }
-
-        $message = $exception->getMessage();
-
-        $app->response->setStatusCode($code, $message);
-
-        $app->response->setJsonContent(
-            [
-                'errors' => [
-                    [
-                        'status'   => 'ERROR',
-                        'messages' => (array) $message
-                    ]
-                ]
-            ]
-        );
-        $app->response->send();
-    }
-);
+require __DIR__.'/config/routing.php';

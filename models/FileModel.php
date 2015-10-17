@@ -2,29 +2,29 @@
 
 /**
  * HackNet
- *
  * Licensed under The MIT License (MIT)
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
- *
  * PHP version 5
  *
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
+namespace HackNet\Models;
 
 use Phalcon\Mvc\Model as Model;
 
 /**
  * File model
+ *
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
@@ -33,24 +33,28 @@ class FileModel extends Model
 
     /**
      * File id
+     *
      * @var int
      */
     public $id;
 
     /**
      * File name
+     *
      * @var string
      */
     public $fileName;
 
     /**
      * File content
+     *
      * @var string
      */
     public $fileContent;
 
     /**
      * User id
+     *
      * @var int
      */
     public $userId;
@@ -76,7 +80,7 @@ class FileModel extends Model
             'file_id'      => 'id',
             'file_name'    => 'fileName',
             'file_content' => 'fileContent',
-            'user_id'      => 'userId'
+            'user_id'      => 'userId',
         ];
     }
 
@@ -90,11 +94,11 @@ class FileModel extends Model
         $this->validate(
             new \Phalcon\Mvc\Model\Validator\StringLength(
                 [
-                'field'          => 'fileName',
-                'max'            => 20,
-                'min'            => 1,
-                'messageMaximum' => 'We don\'t like really long file name',
-                'messageMinimum' => 'We want a longer file name'
+                    'field'          => 'fileName',
+                    'max'            => 20,
+                    'min'            => 1,
+                    'messageMaximum' => 'We don\'t like really long file name',
+                    'messageMinimum' => 'We want a longer file name',
                 ]
             )
         );
@@ -105,7 +109,7 @@ class FileModel extends Model
                     'field'          => 'fileContent',
                     'max'            => 1000,
                     'min'            => 0,
-                    'messageMaximum' => 'We don\'t like really long file'
+                    'messageMaximum' => 'We don\'t like really long file',
                 ]
             )
         );

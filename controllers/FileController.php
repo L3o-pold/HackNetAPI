@@ -2,21 +2,21 @@
 
 /**
  * HackNet
- *
  * Licensed under The MIT License (MIT)
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
- *
  * PHP version 5
  *
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
+namespace HackNet\Controllers;
 
+use HackNet\Models\FileModel;
 use Phalcon\Http\Request\Exception;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\View;
@@ -28,7 +28,7 @@ use Phalcon\Tag;
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
@@ -40,7 +40,7 @@ class FileController extends MainController
      *
      * @return null
      */
-    public function indexAction()
+    public function index()
     {
         $userId = $this->session->get('auth')['id'];
 
@@ -48,7 +48,7 @@ class FileController extends MainController
             array(
                 "conditions" => "userId = ?1",
                 "bind"       => array(1 => $userId),
-                "order"      => "fileName"
+                "order"      => "fileName",
             )
         );
 
@@ -58,14 +58,14 @@ class FileController extends MainController
             $data[] = array(
                 'id'       => $file->id,
                 'fileName' => $file->fileName,
-                'userId'   => $file->userId
+                'userId'   => $file->userId,
             );
         }
 
         $this->response->setJsonContent(
             array(
                 'status' => 'FOUND',
-                'data'   => $data
+                'data'   => $data,
             )
         );
 
@@ -80,7 +80,7 @@ class FileController extends MainController
      * @throws Exception
      * @return void
      */
-    public function getAction($fileName)
+    public function get($fileName)
     {
 
         $userId = $this->session->get('auth')['id'];
@@ -88,7 +88,7 @@ class FileController extends MainController
         $file = FileModel::findFirst(
             array(
                 "conditions" => "userId = ?1 AND fileName = ?2",
-                "bind"       => array(1 => $userId, 2 => $fileName)
+                "bind"       => array(1 => $userId, 2 => $fileName, ),
             )
         );
 
@@ -103,8 +103,8 @@ class FileController extends MainController
                     'id'          => $file->id,
                     'fileName'    => $file->fileName,
                     'userId'      => $file->userId,
-                    'fileContent' => $file->fileContent
-                )
+                    'fileContent' => $file->fileContent,
+                ),
             )
         );
 
@@ -118,9 +118,8 @@ class FileController extends MainController
      *
      * @return void
      */
-    public function putAction($fileName)
+    public function put($fileName)
     {
-        $userId = $this->session->get('auth')['id'];
     }
 
     /**
@@ -129,7 +128,7 @@ class FileController extends MainController
      * @throws Exception          If duplicate
      * @return Response $response API Response
      */
-    public function postAction()
+    public function post()
     {
         $userId = $this->session->get('auth')['id'];
 
@@ -137,9 +136,9 @@ class FileController extends MainController
 
         $file = new FileModel();
 
-        $file->fileName = $postFile->fileName;
+        $file->fileName    = $postFile->fileName;
         $file->fileContent = $postFile->fileContent;
-        $file->userId = $userId;
+        $file->userId      = $userId;
 
         $response = new Response();
 
@@ -150,7 +149,7 @@ class FileController extends MainController
         // Change the HTTP status
         $response->setStatusCode(201, "Created");
 
-        $response->setJsonContent(array('status' => 'OK', 'data' => $file));
+        $response->setJsonContent(array('status' => 'OK', 'data' => $file, ));
 
         return $response;
     }
@@ -162,7 +161,7 @@ class FileController extends MainController
      *
      * @return void
      */
-    public function deleteAction($fileName)
+    public function delete($fileName)
     {
     }
 }

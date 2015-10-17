@@ -10,10 +10,11 @@
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
+namespace HackNet\Models;
 
 use Phalcon\Mvc\Model as Model;
 
@@ -23,7 +24,7 @@ use Phalcon\Mvc\Model as Model;
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
@@ -87,7 +88,7 @@ class UserModel extends Model
             'user_name'  => 'name',
             'user_email' => 'email',
             'user_appid' => 'userAppId',
-            'user_ip'    => 'userIp'
+            'user_ip'    => 'userIp',
         ];
     }
 
@@ -98,7 +99,7 @@ class UserModel extends Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'FileModel', 'userId');
+        $this->hasMany('id', 'HackNet\\Models\\FileModel', 'userId');
     }
 
     /**
@@ -115,7 +116,7 @@ class UserModel extends Model
                     'max'            => 50,
                     'min'            => 3,
                     'messageMaximum' => 'We don\'t like really long names',
-                    'messageMinimum' => 'We want the full name'
+                    'messageMinimum' => 'We want the full name',
                 ]
             )
         );
@@ -124,7 +125,7 @@ class UserModel extends Model
             new \Phalcon\Mvc\Model\Validator\Uniqueness(
                 [
                     'field'   => 'email',
-                    'message' => "Value of field 'email' is already present in another record"
+                    'message' => "Value of field 'email' is already present "."in another record",
                 ]
             )
         );
@@ -136,7 +137,7 @@ class UserModel extends Model
                     'max'            => 50,
                     'min'            => 3,
                     'messageMaximum' => 'Invalid UserApp id',
-                    'messageMinimum' => 'Invalid UserApp id'
+                    'messageMinimum' => 'Invalid UserApp id',
                 ]
             )
         );
@@ -145,7 +146,7 @@ class UserModel extends Model
             new \Phalcon\Mvc\Model\Validator\Uniqueness(
                 [
                     'field'   => 'userAppId',
-                    'message' => "Value of field 'userAppId' is already present in another record"
+                    'message' => "Value of field 'userAppId' is already present "."in another record",
                 ]
             )
         );

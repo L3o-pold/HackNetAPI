@@ -31,9 +31,8 @@ before_script:
 script:
  - vendor/bin/phpcs --config-set installed_paths ../../escapestudios/Symfony2-coding-standard
  - vendor/bin/phpcbf --config-set installed_paths ../../escapestudios/Symfony2-coding-standard
- - vendor/bin/phpcbf --runtime-set exitIgnoreWarnings true --ignore=vendor,library,cphalcon ./
- - vendor/bin/phpcs --runtime-set exitIgnoreWarnings true  --ignore=vendor,library,cphalcon ./
- - phpunit
+ - vendor/bin/phpcbf --runtime-set exitIgnoreWarnings true  --standard=Symfony2 --ignore=vendor,library,cphalcon ./
+ - vendor/bin/phpcs --runtime-set exitIgnoreWarnings true --standard=Symfony2 --ignore=vendor,library,cphalcon,public/index.php,tests/bootstrap.php ./
 
 notifications:
   email:

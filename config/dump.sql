@@ -4,228 +4,246 @@
 /*==============================================================*/
 
 
-drop table if exists can_do;
+DROP TABLE IF EXISTS can_do;
 
-drop table if exists computer;
+DROP TABLE IF EXISTS computer;
 
-drop table if exists discover;
+DROP TABLE IF EXISTS discover;
 
-drop table if exists file;
+DROP TABLE IF EXISTS file;
 
-drop table if exists has_installed;
+DROP TABLE IF EXISTS has_installed;
 
-drop table if exists message;
+DROP TABLE IF EXISTS message;
 
-drop table if exists objectif;
+DROP TABLE IF EXISTS objectif;
 
-drop table if exists program;
+DROP TABLE IF EXISTS program;
 
-drop table if exists quest;
+DROP TABLE IF EXISTS quest;
 
 /*==============================================================*/
 /* Table : can_do                                               */
 /*==============================================================*/
-create table can_do
+CREATE TABLE can_do
 (
-   user_id                        int(11)                        not null,
-   quest_id                       int(11)                        not null,
-   primary key (user_id, quest_id)
+  user_id  INT(11) NOT NULL,
+  quest_id INT(11) NOT NULL,
+  PRIMARY KEY (user_id, quest_id)
 )
-ENGINE=innodb;
+  ENGINE = innodb;
 
 /*==============================================================*/
 /* Index : can_do_fk                                            */
 /*==============================================================*/
-create index can_do_fk on can_do
+CREATE INDEX can_do_fk ON can_do
 (
-   user_id
+  user_id
 );
 
 /*==============================================================*/
 /* Index : can_do2_fk                                           */
 /*==============================================================*/
-create index can_do2_fk on can_do
+CREATE INDEX can_do2_fk ON can_do
 (
-   quest_id
+  quest_id
 );
 
 /*==============================================================*/
 /* Table : computer                                             */
 /*==============================================================*/
-create table computer
+CREATE TABLE computer
 (
-   user_id                        int(11)                        not null auto_increment,
-   user_ip                        longtext,
-   user_name                      longtext,
-   user_email                     longtext,
-   user_appid                     longtext,
-   primary key (user_id)
+  user_id    INT(11) NOT NULL AUTO_INCREMENT,
+  user_ip    LONGTEXT,
+  user_name  LONGTEXT,
+  user_email LONGTEXT,
+  user_appid LONGTEXT,
+  PRIMARY KEY (user_id)
 )
-ENGINE=innodb;
+  ENGINE = innodb;
 
 /*==============================================================*/
 /* Table : discover                                             */
 /*==============================================================*/
-create table discover
+CREATE TABLE discover
 (
-   user_id                        int(11)                        not null,
-   com_user_id                    int(11)                        not null,
-   primary key (user_id, com_user_id)
+  user_id     INT(11) NOT NULL,
+  com_user_id INT(11) NOT NULL,
+  PRIMARY KEY (user_id, com_user_id)
 )
-ENGINE=innodb;
+  ENGINE = innodb;
 
 /*==============================================================*/
 /* Index : discover_fk                                          */
 /*==============================================================*/
-create index discover_fk on discover
+CREATE INDEX discover_fk ON discover
 (
-   user_id
+  user_id
 );
 
 /*==============================================================*/
 /* Index : discover2_fk                                         */
 /*==============================================================*/
-create index discover2_fk on discover
+CREATE INDEX discover2_fk ON discover
 (
-   com_user_id
+  com_user_id
 );
 
 /*==============================================================*/
 /* Table : file                                                 */
 /*==============================================================*/
-create table file
+CREATE TABLE file
 (
-   file_id                        int(11)                        not null auto_increment,
-   user_id                        int(11)                        not null,
-   file_name                      longtext,
-   file_content                   text,
-   primary key (file_id)
+  file_id      INT(11) NOT NULL AUTO_INCREMENT,
+  user_id      INT(11) NOT NULL,
+  file_name    LONGTEXT,
+  file_content TEXT,
+  PRIMARY KEY (file_id)
 )
-ENGINE=innodb;
+  ENGINE = innodb;
 
 /*==============================================================*/
 /* Index : contains_fk                                          */
 /*==============================================================*/
-create index contains_fk on file
+CREATE INDEX contains_fk ON file
 (
-   user_id
+  user_id
 );
 
 /*==============================================================*/
 /* Table : has_installed                                        */
 /*==============================================================*/
-create table has_installed
+CREATE TABLE has_installed
 (
-   user_id                        int(11)                        not null,
-   program_id                     int(11)                        not null,
-   primary key (user_id, program_id)
+  user_id    INT(11) NOT NULL,
+  program_id INT(11) NOT NULL,
+  PRIMARY KEY (user_id, program_id)
 )
-ENGINE=innodb;
+  ENGINE = innodb;
 
 /*==============================================================*/
 /* Index : has_installed_fk                                     */
 /*==============================================================*/
-create index has_installed_fk on has_installed
+CREATE INDEX has_installed_fk ON has_installed
 (
-   user_id
+  user_id
 );
 
 /*==============================================================*/
 /* Index : has_installed2_fk                                    */
 /*==============================================================*/
-create index has_installed2_fk on has_installed
+CREATE INDEX has_installed2_fk ON has_installed
 (
-   program_id
+  program_id
 );
 
 /*==============================================================*/
 /* Table : message                                              */
 /*==============================================================*/
-create table message
+CREATE TABLE message
 (
-   message_id                     int(11)                        not null auto_increment,
-   user_id                        int(11)                        not null,
-   message_subject                longtext,
-   message_content                text,
-   message_date                   timestamp,
-   primary key (message_id)
+  message_id      INT(11) NOT NULL AUTO_INCREMENT,
+  user_id         INT(11) NOT NULL,
+  message_subject LONGTEXT,
+  message_content TEXT,
+  message_date    TIMESTAMP,
+  PRIMARY KEY (message_id)
 )
-ENGINE=innodb;
+  ENGINE = innodb;
 
 /*==============================================================*/
 /* Index : get_fk                                               */
 /*==============================================================*/
-create index get_fk on message
+CREATE INDEX get_fk ON message
 (
-   user_id
+  user_id
 );
 
 /*==============================================================*/
 /* Table : objectif                                             */
 /*==============================================================*/
-create table objectif
+CREATE TABLE objectif
 (
-   objectif_id                    int(11)                        not null auto_increment,
-   quest_id                       int(11)                        not null,
-   objectif_subject               longtext,
-   objectif_content               text,
-   primary key (objectif_id)
+  objectif_id      INT(11) NOT NULL AUTO_INCREMENT,
+  quest_id         INT(11) NOT NULL,
+  objectif_subject LONGTEXT,
+  objectif_content TEXT,
+  PRIMARY KEY (objectif_id)
 )
-ENGINE=innodb;
+  ENGINE = innodb;
 
 /*==============================================================*/
 /* Index : required_fk                                          */
 /*==============================================================*/
-create index required_fk on objectif
+CREATE INDEX required_fk ON objectif
 (
-   quest_id
+  quest_id
 );
 
 /*==============================================================*/
 /* Table : program                                              */
 /*==============================================================*/
-create table program
+CREATE TABLE program
 (
-   program_id                     int(11)                        not null auto_increment,
-   primary key (program_id)
+  program_id INT(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (program_id)
 )
-ENGINE=innodb;
+  ENGINE = innodb;
 
 /*==============================================================*/
 /* Table : quest                                                */
 /*==============================================================*/
-create table quest
+CREATE TABLE quest
 (
-   quest_id                       int(11)                        not null auto_increment,
-   quest_subject                  longtext,
-   quest_content                  text,
-   primary key (quest_id)
+  quest_id      INT(11) NOT NULL AUTO_INCREMENT,
+  quest_subject LONGTEXT,
+  quest_content TEXT,
+  PRIMARY KEY (quest_id)
 )
-ENGINE=innodb;
+  ENGINE = innodb;
 
-alter table can_do add constraint fk_can_do foreign key (user_id)
-      references computer (user_id) on delete restrict on update restrict;
+ALTER TABLE can_do ADD CONSTRAINT fk_can_do FOREIGN KEY (user_id)
+REFERENCES computer (user_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
 
-alter table can_do add constraint fk_can_do2 foreign key (quest_id)
-      references quest (quest_id) on delete restrict on update restrict;
+ALTER TABLE can_do ADD CONSTRAINT fk_can_do2 FOREIGN KEY (quest_id)
+REFERENCES quest (quest_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
 
-alter table discover add constraint fk_discover foreign key (user_id)
-      references computer (user_id) on delete restrict on update restrict;
+ALTER TABLE discover ADD CONSTRAINT fk_discover FOREIGN KEY (user_id)
+REFERENCES computer (user_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
 
-alter table discover add constraint fk_discover2 foreign key (com_user_id)
-      references computer (user_id) on delete restrict on update restrict;
+ALTER TABLE discover ADD CONSTRAINT fk_discover2 FOREIGN KEY (com_user_id)
+REFERENCES computer (user_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
 
-alter table file add constraint fk_contains foreign key (user_id)
-      references computer (user_id) on delete restrict on update restrict;
+ALTER TABLE file ADD CONSTRAINT fk_contains FOREIGN KEY (user_id)
+REFERENCES computer (user_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
 
-alter table has_installed add constraint fk_has_installed foreign key (user_id)
-      references computer (user_id) on delete restrict on update restrict;
+ALTER TABLE has_installed ADD CONSTRAINT fk_has_installed FOREIGN KEY (user_id)
+REFERENCES computer (user_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
 
-alter table has_installed add constraint fk_has_installed2 foreign key (program_id)
-      references program (program_id) on delete restrict on update restrict;
+ALTER TABLE has_installed ADD CONSTRAINT fk_has_installed2 FOREIGN KEY (program_id)
+REFERENCES program (program_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
 
-alter table message add constraint fk_get foreign key (user_id)
-      references computer (user_id) on delete restrict on update restrict;
+ALTER TABLE message ADD CONSTRAINT fk_get FOREIGN KEY (user_id)
+REFERENCES computer (user_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
 
-alter table objectif add constraint fk_required foreign key (quest_id)
-      references quest (quest_id) on delete restrict on update restrict;
+ALTER TABLE objectif ADD CONSTRAINT fk_required FOREIGN KEY (quest_id)
+REFERENCES quest (quest_id)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;

@@ -2,21 +2,21 @@
 
 /**
  * HackNet
- *
  * Licensed under The MIT License (MIT)
  * For full copyright and license information, please see the LICENSE
  * Redistributions of files must retain the above copyright notice.
- *
  * PHP version 5
  *
  * @category Game
  * @package  Hacknet
  * @author   Léopold Jacquot <leopold.jacquot@gmail.com>
- * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt MIT License
+ * @license  https://opensource.org/licenses/MIT MIT License
  * @link     http://www.hacknet.com
  * @since    1.0.0
  */
 
+use HackNet\Controllers\FileController;
+use Phalcon\Http\Request\Exception;
 use Phalcon\Mvc\Micro\Collection as MicroCollection;
 use UserApp\Widget\User as UserApp;
 
@@ -27,29 +27,45 @@ use UserApp\Widget\User as UserApp;
  */
 UserApp::setAppId($config->oauth->appId);
 
-$users = new MicroCollection();
-$users->setHandler(new UserController());
-$users->setPrefix('/user');
-$users->get('/', 'indexAction');
-$users->get('/{id}', 'getAction');
-$users->post('/', 'postAction');
-$users->put('/{id}', 'putAction');
-$users->delete('/{id}', 'deleteAction');
-
 $files = new MicroCollection();
 $files->setHandler(new FileController());
 $files->setPrefix('/file');
-$files->get('/', 'indexAction');
-$files->get('/{id}', 'getAction');
-$files->post('/', 'postAction');
-$files->put('/{id}', 'putAction');
-$files->delete('/{id}', 'deleteAction');
+$files->get('/', 'index');
+$files->get('/{id}', 'get');
+$files->post('/', 'post');
+$files->put('/{id}', 'put');
+$files->delete('/{id}', 'delete');
 
-$app->mount($users);
 $app->mount($files);
 
 $app->notFound(
     function () use ($app) {
         throw new Exception('Not Found', 404);
+    }
+);
+
+$app->error(
+    function ($exception) use ($app) {
+        $code = 400;
+
+        if ($exception instanceof Exception) {
+            $code = $exception->getCode();
+        }
+
+        $message = $exception->getMessage();
+
+        $app->response->setStatusCode($code, $message);
+
+        $app->response->setJsonContent(
+            [
+                'errors' => [
+                    [
+                        'status'   => 'ERROR',
+                        'messages' => (array) $message,
+                    ],
+                ],
+            ]
+        );
+        $app->response->send();
     }
 );
