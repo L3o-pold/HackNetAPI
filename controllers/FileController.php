@@ -143,7 +143,13 @@ class FileController extends MainController
         $response = new Response();
 
         if (!$file->save()) {
-            throw new Exception('Conflit', 401);
+            $errorMsg = 'Confilt:';
+
+            foreach ($file->getMessages() as $exception) {
+                $errorMsg .= ' '.$exception->getMessage();
+            }
+
+            throw new Exception($errorMsg, 401);
         }
 
         // Change the HTTP status

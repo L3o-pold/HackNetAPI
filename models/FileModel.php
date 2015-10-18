@@ -95,7 +95,7 @@ class FileModel extends Model
             new \Phalcon\Mvc\Model\Validator\StringLength(
                 [
                     'field'          => 'fileName',
-                    'max'            => 20,
+                    'max'            => 1000,
                     'min'            => 1,
                     'messageMaximum' => 'We don\'t like really long file name',
                     'messageMinimum' => 'We want a longer file name',
