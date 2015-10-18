@@ -46,9 +46,9 @@ class FileController extends MainController
 
         $files = FileModel::find(
             array(
-                "conditions" => "userId = ?1",
-                "bind"       => array(1 => $userId),
-                "order"      => "fileName",
+                'conditions' => 'userId = ?1',
+                'bind'       => array(1 => $userId),
+                'order'      => 'fileName',
             )
         );
 
@@ -87,8 +87,8 @@ class FileController extends MainController
 
         $file = FileModel::findFirst(
             array(
-                "conditions" => "userId = ?1 AND fileName = ?2",
-                "bind"       => array(1 => $userId, 2 => $fileName, ),
+                'conditions' => 'userId = ?1 AND fileName = ?2',
+                'bind'       => array(1 => $userId, 2 => $fileName, ),
             )
         );
 
@@ -153,7 +153,7 @@ class FileController extends MainController
         }
 
         // Change the HTTP status
-        $response->setStatusCode(201, "Created");
+        $response->setStatusCode(201, 'Created');
 
         $response->setJsonContent(array('status' => 'OK', 'data' => $file, ));
 

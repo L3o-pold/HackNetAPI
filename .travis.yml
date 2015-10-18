@@ -33,6 +33,7 @@ script:
  - vendor/bin/phpcbf --config-set installed_paths ../../escapestudios/symfony2-coding-standard
  - vendor/bin/phpcbf --runtime-set exitIgnoreWarnings true  --standard=Symfony2 --ignore=vendor,library,cphalcon ./
  - vendor/bin/phpcs --runtime-set exitIgnoreWarnings true --standard=Symfony2 --ignore=vendor,library,cphalcon,public/index.php,tests/bootstrap.php ./
+ - phpunit
 
 notifications:
   email:

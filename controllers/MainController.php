@@ -45,7 +45,7 @@ class MainController extends Controller
         $authenticated = UserApp::authenticated();
 
         if ($authenticated && $this->session->get('auth')['id']) {
-            //return;
+            return;
         } elseif (!$this->cookies->has('ua_session_token')) {
             throw new Exception('Forbiden', 401);
         }
@@ -79,8 +79,8 @@ class MainController extends Controller
     {
         return UserModel::findFirst(
             array(
-                "conditions" => "userAppId = ?1",
-                "bind"       => array(1 => UserApp::current()->user_id, ),
+                'conditions' => 'userAppId = ?1',
+                'bind'       => array(1 => UserApp::current()->user_id, ),
             )
         );
     }

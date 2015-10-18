@@ -2,6 +2,7 @@
 /config/development/
 /migrations/
 /vendor/
+/reports/
 .phalcon
 composer.lock
 config/config.php

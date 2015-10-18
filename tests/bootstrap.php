@@ -35,13 +35,14 @@ require __DIR__."/../vendor/autoload.php";
 // Autoload the dependencies found in composer
 $loader = new \Phalcon\Loader();
 
-$loader->registerDirs(
+$loader->registerNamespaces(
     array(
-        ROOT_PATH,
+        'HackNet\Tests'             => __DIR__.'/',
+        'HackNet\Tests\Models'      => __DIR__.'/models/',
+        'HackNet\Tests\Controllers' => __DIR__.'/controllers/',
     )
-);
-
-$loader->register();
+)->register()
+;
 
 $di = new FactoryDefault();
 DI::reset();

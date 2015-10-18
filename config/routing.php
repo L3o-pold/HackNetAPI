@@ -16,7 +16,7 @@
  */
 
 use HackNet\Controllers\FileController;
-use Phalcon\Http\Request\Exception;
+use Phalcon\Http\Request\Exception as HttpException;
 use Phalcon\Mvc\Micro\Collection as MicroCollection;
 use UserApp\Widget\User as UserApp;
 
@@ -40,7 +40,7 @@ $app->mount($files);
 
 $app->notFound(
     function () use ($app) {
-        throw new Exception('Not Found', 404);
+        throw new HttpException('Not Found', 404);
     }
 );
 
@@ -48,7 +48,7 @@ $app->error(
     function ($exception) use ($app) {
         $code = 400;
 
-        if ($exception instanceof Exception) {
+        if ($exception instanceof HttpException) {
             $code = $exception->getCode();
         }
 

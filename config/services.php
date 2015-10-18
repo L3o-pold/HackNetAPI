@@ -87,7 +87,7 @@ $di->set(
     'dispatcher',
     function () {
         $dispatcher = new Dispatcher();
-        $dispatcher->setDefaultNamespace("HackNet\\Controllers");
+        $dispatcher->setDefaultNamespace('HackNet\Controllers');
 
         return $dispatcher;
     }

@@ -72,7 +72,7 @@ class FileModel extends Model
     /**
      * Map field on database table
      *
-     * @return array
+     * @return array<string,string> Mapped field
      */
     public function columnMap()
     {
