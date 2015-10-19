@@ -85,19 +85,7 @@ class FileController extends MainController
 
         $userId = $this->session->get('auth')['id'];
 
-        $file = FileModel::findFirst(
-            array(
-                'conditions' => 'userId = ?1 AND fileName = ?2',
-                'bind'       => array(
-                    1 => $userId,
-                    2 => $fileName,
-                ),
-            )
-        );
-
-        if ($file == false) {
-            throw new HttpException('Not Found', 404);
-        }
+        $file = $this->getUserFile($userId, $fileName);
 
         $this->response->setJsonContent(
             array(
@@ -125,32 +113,14 @@ class FileController extends MainController
     {
         $userId = $this->session->get('auth')['id'];
 
-        $file = FileModel::findFirst(
-            array(
-                'conditions' => 'userId = ?1 AND fileName = ?2',
-                'bind'       => array(
-                    1 => $userId,
-                    2 => $fileName,
-                ),
-            )
-        );
-
-        if ($file == false) {
-            throw new HttpException('Not Found', 404);
-        }
+        $file = $this->getUserFile($userId, $fileName);
 
         $postFile = $this->request->getJsonRawBody();
 
         $file->fileContent = $postFile->fileContent;
 
         if (!$file->save()) {
-            $errorMsg = 'Error:';
-
-            foreach ($file->getMessages() as $exception) {
-                $errorMsg .= ' '.$exception->getMessage();
-            }
-
-            throw new HttpException($errorMsg, 401);
+            throw new HttpException($file->getMessages(), 401);
         }
 
         // Change the HTTP status
@@ -170,7 +140,7 @@ class FileController extends MainController
      * Create a new user file
      *
      * @throws HttpException          If duplicate
-     * @return Response $response API Response
+     * @return void
      */
     public function post()
     {
@@ -185,13 +155,7 @@ class FileController extends MainController
         $file->userId      = $userId;
 
         if (!$file->save()) {
-            $errorMsg = 'Confilt:';
-
-            foreach ($file->getMessages() as $exception) {
-                $errorMsg .= ' '.$exception->getMessage();
-            }
-
-            throw new HttpException($errorMsg, 401);
+            throw new HttpException($file->getMessages(), 401);
         }
 
         // Change the HTTP status
@@ -218,6 +182,32 @@ class FileController extends MainController
     {
         $userId = $this->session->get('auth')['id'];
 
+        $file = $this->getUserFile($userId, $fileName);
+
+        if ($file->delete() == false) {
+            throw new HttpException($file->getMessages(), 401);
+        }
+
+        $this->response->setJsonContent(
+            array(
+                'status' => 'OK',
+            )
+        );
+
+        $this->response->send();
+    }
+
+    /**
+     * Get a user file
+     *
+     * @param int    $userId   The user id
+     * @param string $fileName The requested file name
+     *
+     * @return \Phalcon\Mvc\Model The file requested
+     * @throws HttpException      If user isn't authorized or file doesn't exist
+     */
+    private function getUserFile($userId, $fileName)
+    {
         $file = FileModel::findFirst(
             array(
                 'conditions' => 'userId = ?1 AND fileName = ?2',
@@ -232,22 +222,6 @@ class FileController extends MainController
             throw new HttpException('Not Found', 404);
         }
 
-        if ($file->delete() == false) {
-            $errorMsg = 'Error:';
-
-            foreach ($file->getMessages() as $exception) {
-                $errorMsg .= ' '.$exception->getMessage();
-            }
-
-            throw new HttpException($errorMsg, 401);
-        }
-
-        $this->response->setJsonContent(
-            array(
-                'status' => 'OK',
-            )
-        );
-
-        $this->response->send();
+        return $file;
     }
 }

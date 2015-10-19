@@ -62,13 +62,16 @@ try {
      */
     $message = $e->getMessage();
 
-    $app->response->setStatusCode($code, $message);
+    $app->response->setStatusCode(
+        $code,
+        is_array($message) ? $message[0] : $message
+    );
 
     $app->response->setJsonContent(
         [
             'errors' => [
                 [
-                    'status'   => 'ERROR',
+                    'status' => 'ERROR',
                     'messages' => (array) $message,
                 ],
             ],
