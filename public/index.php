@@ -51,5 +51,28 @@ try {
      */
     $app->handle();
 } catch (\Exception $e) {
-    echo $e->getMessage();
+    $code = 400;
+
+    if ($e instanceof Phalcon\Http\Request\Exception) {
+        $code = $e->getCode();
+    }
+
+    /**
+     * Check ENV debug to hide this in production
+     */
+    $message = $e->getMessage();
+
+    $app->response->setStatusCode($code, $message);
+
+    $app->response->setJsonContent(
+        [
+            'errors' => [
+                [
+                    'status'   => 'ERROR',
+                    'messages' => (array) $message,
+                ],
+            ],
+        ]
+    );
+    $app->response->send();
 }

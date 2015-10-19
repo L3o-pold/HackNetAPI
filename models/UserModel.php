@@ -125,8 +125,7 @@ class UserModel extends Model
             new \Phalcon\Mvc\Model\Validator\Uniqueness(
                 [
                     'field'   => 'email',
-                    'message' => 'Value of field \'email\' is already present '.
-                                 'in another record',
+                    'message' => 'Value of field \'email\' is already present '.'in another record',
                 ]
             )
         );
@@ -147,8 +146,7 @@ class UserModel extends Model
             new \Phalcon\Mvc\Model\Validator\Uniqueness(
                 [
                     'field'   => 'userAppId',
-                    'message' => 'Value of field \'userAppId\' is already present '
-                                 .'in another record',
+                    'message' => 'Value of field \'userAppId\' is already present '.'in another record',
                 ]
             )
         );

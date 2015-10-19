@@ -25,6 +25,12 @@ use UserApp\Widget\User as UserApp;
  *
  * @var \Phalcon\Mvc\Micro $app
  */
+$app->notFound(
+    function () use ($app) {
+        throw new HttpException('Not Found', 404);
+    }
+);
+
 UserApp::setAppId($config->oauth->appId);
 
 $files = new MicroCollection();
@@ -37,35 +43,3 @@ $files->put('/{id}', 'put');
 $files->delete('/{id}', 'delete');
 
 $app->mount($files);
-
-$app->notFound(
-    function () use ($app) {
-        throw new HttpException('Not Found', 404);
-    }
-);
-
-$app->error(
-    function ($exception) use ($app) {
-        $code = 400;
-
-        if ($exception instanceof HttpException) {
-            $code = $exception->getCode();
-        }
-
-        $message = $exception->getMessage();
-
-        $app->response->setStatusCode($code, $message);
-
-        $app->response->setJsonContent(
-            [
-                'errors' => [
-                    [
-                        'status'   => 'ERROR',
-                        'messages' => (array) $message,
-                    ],
-                ],
-            ]
-        );
-        $app->response->send();
-    }
-);

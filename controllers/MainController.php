@@ -17,7 +17,7 @@
 namespace HackNet\Controllers;
 
 use HackNet\Models\UserModel;
-use Phalcon\Http\Request\Exception;
+use Phalcon\Http\Request\Exception as HttpException;
 use Phalcon\Mvc\Controller;
 use Phalcon\Mvc\Model\Message;
 use UserApp\Widget\User as UserApp;
@@ -38,16 +38,14 @@ class MainController extends Controller
      * Auth an user based on UserApp
      *
      * @return void
-     * @throws Exception If login fail
      */
     public function onConstruct()
     {
-        $authenticated = UserApp::authenticated();
 
-        if ($authenticated && $this->session->get('auth')['id']) {
-            return;
-        } elseif (!$this->cookies->has('ua_session_token')) {
-            throw new Exception('Forbiden', 401);
+        $this->session->set('auth', null);
+
+        if (!$this->cookies->has('ua_session_token')) {
+            throw new HttpException('Forbiden', 401);
         }
 
         $this->cookies->useEncryption(false);
@@ -89,7 +87,7 @@ class MainController extends Controller
      * Register a player
      *
      * @return int       User id
-     * @throws Exception If user can't be registered
+     * @throws HttpException If user can't be registered
      */
     private function userRegister()
     {
@@ -114,6 +112,6 @@ class MainController extends Controller
             $errorMessage .= ' '.$message->getMessage();
         }
 
-        throw new Exception($errorMessage, 400);
+        throw new HttpException($errorMessage, 400);
     }
 }
