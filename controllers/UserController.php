@@ -16,6 +16,9 @@
  */
 namespace HackNet\Controllers;
 
+use HackNet\Models\UserModel;
+use Phalcon\Http\Request\Exception as HttpException;
+
 /**
  * User controller
  *
@@ -28,4 +31,57 @@ namespace HackNet\Controllers;
  */
 class UserController extends MainController
 {
+
+    /**
+     * Fetch an user
+     *
+     * @param string $userIp The user ip address
+     *
+     * @throws HttpException
+     * @return void
+     */
+    public function get($userIp)
+    {
+        $user = $this->getUser($userIp);
+
+        $this->response->setJsonContent(
+            array(
+                'status' => 'FOUND',
+                'data'   => array(
+                    'id'        => $user->id,
+                    'name'      => $user->name,
+                    'userAppId' => $user->userAppId,
+                    'userIp'    => $user->userIp,
+                ),
+            )
+        );
+
+        $this->response->send();
+    }
+
+    /**
+     * Fetch an user
+     *
+     * @param string $userIp The user ip address
+     *
+     * @throws HttpException
+     * @return \Phalcon\Mvc\Model
+     */
+    public function getUser($userIp)
+    {
+        $user = UserModel::findFirst(
+            array(
+                'conditions' => 'userIp = ?1',
+                'bind'       => array(
+                    1 => $userIp,
+                ),
+            )
+        );
+
+        if (!$user) {
+            throw new HttpException('Not Found', 404);
+        }
+
+        return $user;
+    }
 }

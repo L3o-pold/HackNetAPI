@@ -100,6 +100,7 @@ class UserModel extends Model
     public function initialize()
     {
         $this->hasMany('id', 'HackNet\\Models\\FileModel', 'userId');
+        $this->hasMany('id', 'HackNet\\Models\\ConnectModel', 'userId');
     }
 
     /**
@@ -126,6 +127,15 @@ class UserModel extends Model
                 [
                     'field'   => 'email',
                     'message' => 'Value of field \'email\' is already present '.'in another record',
+                ]
+            )
+        );
+
+        $this->validate(
+            new \Phalcon\Mvc\Model\Validator\Uniqueness(
+                [
+                    'field'   => 'userIp',
+                    'message' => 'Value of field \'ip address\' is already present '.'in another record',
                 ]
             )
         );

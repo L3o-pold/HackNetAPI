@@ -34,6 +34,14 @@ use UserApp\Widget\User as UserApp;
  */
 class MainController extends Controller
 {
+
+    /**
+     * The user id
+     *
+     * @var int $userId
+     */
+    protected $userId;
+
     /**
      * Auth an user based on UserApp
      *
@@ -65,7 +73,14 @@ class MainController extends Controller
             $user->id = $this->userRegister();
         }
 
-        $this->session->set('auth', array('id' => $user->id, ));
+        $this->session->set(
+            'auth',
+            array(
+                'id' => $user->id,
+            )
+        );
+
+        $this->userId = $user->id;
     }
 
     /**
@@ -78,7 +93,9 @@ class MainController extends Controller
         return UserModel::findFirst(
             array(
                 'conditions' => 'userAppId = ?1',
-                'bind'       => array(1 => UserApp::current()->user_id, ),
+                'bind'       => array(
+                    1 => UserApp::current()->user_id,
+                ),
             )
         );
     }
@@ -98,6 +115,7 @@ class MainController extends Controller
         $user->name      = $appUser->{'last_name'};
         $user->email     = $appUser->email;
         $user->userAppId = $appUser->{'user_id'};
+        $user->userIp    = long2ip(bin2hex($user->userAppId));
 
         if ($user->save()) {
             return $user->id;

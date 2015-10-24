@@ -85,6 +85,16 @@ class FileModel extends Model
     }
 
     /**
+     * Declare database relationship
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+        $this->belongsTo('userId', 'HackNet\\Models\\UserModel', 'id');
+    }
+
+    /**
      * Validate user input
      *
      * @return bool Data is valid

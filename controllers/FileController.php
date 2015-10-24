@@ -42,12 +42,10 @@ class FileController extends MainController
      */
     public function index()
     {
-        $userId = $this->session->get('auth')['id'];
-
         $files = FileModel::find(
             array(
                 'conditions' => 'userId = ?1',
-                'bind'       => array(1 => $userId),
+                'bind'       => array(1 => $this->userId),
                 'order'      => 'fileName',
             )
         );
@@ -82,10 +80,7 @@ class FileController extends MainController
      */
     public function get($fileName)
     {
-
-        $userId = $this->session->get('auth')['id'];
-
-        $file = $this->getUserFile($userId, $fileName);
+        $file = $this->getUserFile($fileName);
 
         $this->response->setJsonContent(
             array(
@@ -111,9 +106,7 @@ class FileController extends MainController
      */
     public function put($fileName)
     {
-        $userId = $this->session->get('auth')['id'];
-
-        $file = $this->getUserFile($userId, $fileName);
+        $file = $this->getUserFile($fileName);
 
         $postFile = $this->request->getJsonRawBody();
 
@@ -144,15 +137,13 @@ class FileController extends MainController
      */
     public function post()
     {
-        $userId = $this->session->get('auth')['id'];
-
         $postFile = $this->request->getJsonRawBody();
 
         $file = new FileModel();
 
         $file->fileName    = $postFile->fileName;
         $file->fileContent = $postFile->fileContent;
-        $file->userId      = $userId;
+        $file->userId      = $this->userId;
 
         if (!$file->save()) {
             throw new HttpException($file->getMessages(), 401);
@@ -180,11 +171,9 @@ class FileController extends MainController
      */
     public function delete($fileName)
     {
-        $userId = $this->session->get('auth')['id'];
+        $file = $this->getUserFile($fileName);
 
-        $file = $this->getUserFile($userId, $fileName);
-
-        if ($file->delete() == false) {
+        if (!$file->delete()) {
             throw new HttpException($file->getMessages(), 401);
         }
 
@@ -200,25 +189,24 @@ class FileController extends MainController
     /**
      * Get a user file
      *
-     * @param int    $userId   The user id
      * @param string $fileName The requested file name
      *
      * @return \Phalcon\Mvc\Model The file requested
      * @throws HttpException      If user isn't authorized or file doesn't exist
      */
-    private function getUserFile($userId, $fileName)
+    private function getUserFile($fileName)
     {
         $file = FileModel::findFirst(
             array(
                 'conditions' => 'userId = ?1 AND fileName = ?2',
                 'bind'       => array(
-                    1 => $userId,
+                    1 => $this->userId,
                     2 => $fileName,
                 ),
             )
         );
 
-        if ($file == false) {
+        if (!$file) {
             throw new HttpException('Not Found', 404);
         }
 

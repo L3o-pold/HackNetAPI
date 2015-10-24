@@ -15,7 +15,9 @@
  * @since    1.0.0
  */
 
+use HackNet\Controllers\ConnectController;
 use HackNet\Controllers\FileController;
+use HackNet\Controllers\UserController;
 use Phalcon\Http\Request\Exception as HttpException;
 use Phalcon\Mvc\Micro\Collection as MicroCollection;
 use UserApp\Widget\User as UserApp;
@@ -42,4 +44,17 @@ $files->post('/', 'post');
 $files->put('/{id}', 'put');
 $files->delete('/{id}', 'delete');
 
+$users = new MicroCollection();
+$users->setHandler(new UserController());
+$users->setPrefix('/user');
+$users->get('/{ip}', 'get');
+
+$connexions = new MicroCollection();
+$connexions->setHandler(new ConnectController());
+$connexions->setPrefix('/connect');
+$connexions->get('/', 'index');
+$connexions->get('/{id}', 'get');
+
 $app->mount($files);
+$app->mount($users);
+$app->mount($connexions);
